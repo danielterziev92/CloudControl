@@ -1,0 +1,23 @@
+package com.cloudcontrol.inventory.infrastructure.entities;
+
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "countries")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Country {
+    public static final int NAME_MAX_LENGTH = 48;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "name", length = NAME_MAX_LENGTH, nullable = false)
+    private String name;
+}
