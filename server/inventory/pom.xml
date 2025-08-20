@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.cloudcontrol</groupId>
-    <artifactId>product</artifactId>
+    <artifactId>inventory</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>product</name>
-    <description>product</description>
+    <name>inventory</name>
+    <description>inventory</description>
     <url/>
     <licenses>
         <license/>

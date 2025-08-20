@@ -1,4 +1,4 @@
-package com.cloudcontrol.product.infrastructure.entities;
+package com.cloudcontrol.inventory.infrastructure.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
