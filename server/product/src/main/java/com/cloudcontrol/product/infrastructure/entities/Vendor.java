@@ -12,6 +12,8 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 import org.hibernate.validator.constraints.URL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 
@@ -31,13 +33,16 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(exclude = {"createdAt",})
 public class Vendor {
 
     public static final int NAME_MAX_LENGTH = 100;
-    public static final int URL_MAX_LENGTH = 2048;
+    public static final int PICTURE_URL_MAX_LENGTH = 2048;
 
+    protected static final Logger logger = LoggerFactory.getLogger(Vendor.class);
+
+    @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -49,9 +54,9 @@ public class Vendor {
     private String name;
 
     @URL(message = "Please provide a valid URL")
-    @Size(max = URL_MAX_LENGTH, message = "Vendor URL cannot exceed {max} characters")
-    @Column(name = "url", length = URL_MAX_LENGTH)
-    private String url;
+    @Size(max = PICTURE_URL_MAX_LENGTH, message = "Vendor picture URL cannot exceed {max} characters")
+    @Column(name = "picture_url", length = PICTURE_URL_MAX_LENGTH)
+    private String pictureUrl;
 
     @NotNull(message = "Display order is required")
     @Min(value = 0, message = "Display order must be non-negative")
@@ -77,13 +82,22 @@ public class Vendor {
         }
 
         if (name != null) {
-            name = name.trim();
+            String trimmedName = name.trim();
+            if (trimmedName.isEmpty()) {
+                logger.error("Vendor name cannot be empty after trimming. Original value: '{}'", name);
+            } else {
+                name = trimmedName;
+            }
         }
 
-        if (url != null && !url.trim().isEmpty()) {
-            url = url.trim();
-        } else {
-            url = null;
+        if (pictureUrl != null) {
+            String trimmedUrl = pictureUrl.trim();
+            if (trimmedUrl.isEmpty()) {
+                logger.warn("Vendor picture URL cannot be empty after trimming. Original value: '{}'", pictureUrl);
+                pictureUrl = null;
+            } else {
+                pictureUrl = trimmedUrl;
+            }
         }
     }
 }
