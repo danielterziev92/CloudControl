@@ -89,4 +89,7 @@ public class Partner {
 
     @OneToMany(mappedBy = "partner", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PartnerBankAccount> bankAccounts;
+
+    @OneToMany(mappedBy = "partner", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<PartnerAddress> addresses;
 }
