@@ -7,7 +7,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "countries")
+@Table(
+        name = "countries",
+        indexes = {
+                @Index(name = "inx_countries_name", columnList = "name")
+        }
+)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
