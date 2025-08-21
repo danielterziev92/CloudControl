@@ -1,5 +1,6 @@
 package com.cloudcontrol.inventory.infrastructure.entities;
 
+import com.cloudcontrol.inventory.domain.enums.CategoryType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -25,12 +26,12 @@ import java.util.List;
 @Table(
         name = "categories",
         indexes = {
-                @Index(name = "idx_categories_name", columnList = "name"),
-                @Index(name = "idx_categories_display_order", columnList = "display_order"),
-                @Index(name = "idx_categories_parent_id", columnList = "parent_id")
+                @Index(name = "idx_categories_name", columnList = "name, type"),
+                @Index(name = "idx_categories_display_order", columnList = "display_order, type"),
+                @Index(name = "idx_categories_parent_id", columnList = "parent_id, type")
         },
         uniqueConstraints = {
-                @UniqueConstraint(name = "uc_category_name_parent", columnNames = {"name", "parent_id"})
+                @UniqueConstraint(name = "uc_category_name_parent_type", columnNames = {"name", "parent_id", "type"})
         }
 )
 @Data
@@ -47,6 +48,11 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull(message = "CategoryType is required")
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "type", nullable = false)
+    private CategoryType type;
 
     @NotNull(message = "Category name is required")
     @NotBlank(message = "Category name cannot be blank")
@@ -78,12 +84,14 @@ public class Category {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime updatedAt;
 
-    public Category(String name, Long displayOrder) {
+    public Category(CategoryType type, String name, Long displayOrder) {
+        this.type = type;
         this.name = name;
         this.displayOrder = displayOrder;
     }
 
-    public Category(String name, Long displayOrder, Category parent) {
+    public Category(CategoryType type, String name, Long displayOrder, Category parent) {
+        this.type = type;
         this.name = name;
         this.displayOrder = displayOrder;
         this.parent = parent;
