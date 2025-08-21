@@ -1,5 +1,6 @@
 package com.cloudcontrol.inventory.infrastructure.entities;
 
+import com.cloudcontrol.inventory.domain.enums.CategoryType;
 import com.cloudcontrol.inventory.domain.enums.PartnerType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -19,6 +20,7 @@ import java.util.Set;
                 @Index(name = "idx_partners_company_name_active", columnList = "company_name, is_active"),
                 @Index(name = "idx_partners_tax_number_active", columnList = "tax_number, is_active"),
                 @Index(name = "idx_partners_vat_number_active", columnList = "vat_number, is_active"),
+                @Index(name = "idx_partners_category_id", columnList = "category_id, is_active"),
                 @Index(name = "idx_partners_is_active", columnList = "is_active"),
         },
         uniqueConstraints = {
@@ -95,4 +97,23 @@ public class Partner {
 
     @OneToMany(mappedBy = "partner", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PartnerAdditionalInfo> additionalInfos;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @PrePersist
+    @PreUpdate
+    private void prePersistUpdate() {
+        if (category != null && category.getType() != CategoryType.PARTNER) {
+            throw new IllegalArgumentException("Partner can only be assigned to PARTNER type categories");
+        }
+    }
+
+    public void setCategory(Category category) {
+        if (category != null && category.getType() != CategoryType.PARTNER) {
+            throw new IllegalArgumentException("Partner can only be assigned to PARTNER type categories");
+        }
+        this.category = category;
+    }
 }

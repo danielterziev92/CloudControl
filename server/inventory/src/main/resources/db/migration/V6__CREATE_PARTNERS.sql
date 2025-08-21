@@ -11,6 +11,7 @@ CREATE TABLE partners
     created_at          TIMESTAMP WITHOUT TIME ZONE             NOT NULL,
     updated_at          TIMESTAMP WITHOUT TIME ZONE             NOT NULL,
     deleted_at          TIMESTAMP WITHOUT TIME ZONE,
+    category_id         BIGINT,
     CONSTRAINT pk_partners PRIMARY KEY (id)
 );
 
@@ -19,6 +20,8 @@ ALTER TABLE partners
 
 ALTER TABLE partners
     ADD CONSTRAINT uc_partner_tax_number UNIQUE (tax_number);
+
+CREATE INDEX idx_partners_category_id ON partners (category_id, is_active);
 
 CREATE INDEX idx_partners_company_name_active ON partners (company_name, is_active);
 
@@ -29,3 +32,6 @@ CREATE INDEX idx_partners_sku_active ON partners (sku, is_active);
 CREATE INDEX idx_partners_tax_number_active ON partners (tax_number, is_active);
 
 CREATE INDEX idx_partners_vat_number_active ON partners (vat_number, is_active);
+
+ALTER TABLE partners
+    ADD CONSTRAINT FK_PARTNERS_ON_CATEGORY FOREIGN KEY (category_id) REFERENCES categories (id);
