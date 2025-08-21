@@ -2,7 +2,6 @@ package com.cloudcontrol.inventory.infrastructure.entities;
 
 import com.cloudcontrol.inventory.domain.enums.PartnerType;
 import jakarta.persistence.*;
-import jakarta.servlet.http.Part;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -10,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Table(
@@ -31,7 +31,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString(exclude = {"createdAt", "updatedAt", "deletedAt"})
+@ToString(exclude = {"createdAt", "updatedAt", "deletedAt", "bankAccounts"})
 public class Partner {
 
     public static final int SKU_MAX_LENGTH = 50;
@@ -86,4 +86,7 @@ public class Partner {
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
+
+    @OneToMany(mappedBy = "partner", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<PartnerBankAccount> bankAccounts;
 }
