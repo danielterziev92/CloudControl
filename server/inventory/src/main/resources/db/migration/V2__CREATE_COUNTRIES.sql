@@ -4,3 +4,5 @@ CREATE TABLE countries
     name VARCHAR(48)                             NOT NULL,
     CONSTRAINT pk_countries PRIMARY KEY (id)
 );
+
+CREATE INDEX inx_countries_name ON countries (name);
