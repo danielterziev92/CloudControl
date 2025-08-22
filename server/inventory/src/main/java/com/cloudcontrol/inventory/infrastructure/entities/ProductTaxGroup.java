@@ -31,9 +31,8 @@ public class ProductTaxGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Tax group name is required")
     @NotBlank(message = "Tax group name is required")
-    @NotEmpty(message = "Tax group name cannot be empty")
+    @Size(max = NAME_MAX_LENGTH, message = "Tax group name cannot exceed {max} characters")
     @Column(name = "name", length = NAME_MAX_LENGTH, nullable = false)
     private String name;
 
@@ -42,4 +41,12 @@ public class ProductTaxGroup {
     @Max(value = VALUE_MAX, message = "Tax group value cannot exceed {max}")
     @Column(name = "value", nullable = false)
     private Integer value;
+
+    @PrePersist
+    @PreUpdate
+    private void normalizeData() {
+        if (name != null) {
+            name = name.trim();
+        }
+    }
 }
