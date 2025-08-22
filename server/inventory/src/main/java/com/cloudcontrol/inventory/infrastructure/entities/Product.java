@@ -11,6 +11,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(
@@ -20,6 +22,7 @@ import java.time.LocalDateTime;
                 @Index(name = "idx_products_name_active", columnList = "name, is_active"),
                 @Index(name = "idx_products_type_active", columnList = "type, is_active"),
                 @Index(name = "idx_products_is_active", columnList = "is_active"),
+                @Index(name = "idx_products_vendor_id", columnList = "vendor_id")
         },
         uniqueConstraints = {
                 @UniqueConstraint(name = "uc_product_sku", columnNames = "sku")
@@ -77,6 +80,22 @@ public class Product {
     @Column(name = "deleted_at")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime deletedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tax_group_id")
+    private ProductTaxGroup taxGroup;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vendor_id")
+    private ProductVendor vendor;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ProductBarcode> barcodes = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ProductIdentifier> identifiers = new ArrayList<>();
 
     @PrePersist
     @PreUpdate
