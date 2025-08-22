@@ -1,6 +1,7 @@
 package com.cloudcontrol.inventory.infrastructure.entities;
 
 import com.cloudcontrol.inventory.domain.enums.ProductType;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -65,13 +66,16 @@ public class Product {
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime updatedAt;
 
     @Column(name = "deleted_at")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime deletedAt;
 
     @PrePersist
