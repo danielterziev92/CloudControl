@@ -5,4 +5,7 @@ CREATE TABLE countries
     CONSTRAINT pk_countries PRIMARY KEY (id)
 );
 
+ALTER TABLE countries
+    ADD CONSTRAINT uc_countries_name UNIQUE (name);
+
 CREATE INDEX inx_countries_name ON countries (name);
