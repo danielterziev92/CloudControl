@@ -6,13 +6,13 @@ import lombok.*;
 
 @Entity
 @Table(
-        name = "tax_groups",
+        name = "product_tax_groups",
         indexes = {
-                @Index(name = "inx_tax_groups_name", columnList = "name"),
-                @Index(name = "inx_tax_groups_value", columnList = "value"),
+                @Index(name = "inx_product_tax_groups_name", columnList = "name"),
+                @Index(name = "inx_product_tax_groups_value", columnList = "value"),
         },
         uniqueConstraints = {
-                @UniqueConstraint(name = "uc_tax_group_name", columnNames = "name"),
+                @UniqueConstraint(name = "uc_product_tax_group_name", columnNames = "name"),
         }
 )
 @Data
@@ -20,7 +20,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class TaxGroup {
+public class ProductTaxGroup {
 
     public static final int NAME_MAX_LENGTH = 7;
     public static final int VALUE_MIN = 0;
