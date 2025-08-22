@@ -3,6 +3,7 @@ package com.cloudcontrol.inventory.infrastructure.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -12,6 +13,9 @@ import lombok.*;
         indexes = {
                 @Index(name = "inx_city_regions_name", columnList = "name"),
                 @Index(name = "inx_city_regions_country_id", columnList = "country_id")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uc_city_region_name_country", columnNames = {"name", "country_id"})
         }
 )
 @Data
@@ -34,9 +38,17 @@ public class CityRegion {
     @Column(name = "name", nullable = false, length = NAME_MAX_LENGTH)
     private String name;
 
-    @NotBlank(message = "Country name is required")
+    @NotNull(message = "Country name is required")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "country_id", nullable = false)
     @JsonIgnore
     private Country country;
+
+    @PrePersist
+    @PreUpdate
+    private void normalizeData() {
+        if (name != null) {
+            name = name.trim();
+        }
+    }
 }

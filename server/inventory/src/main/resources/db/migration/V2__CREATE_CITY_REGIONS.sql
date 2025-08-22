@@ -6,6 +6,9 @@ CREATE TABLE city_regions
     CONSTRAINT pk_city_regions PRIMARY KEY (id)
 );
 
+ALTER TABLE city_regions
+    ADD CONSTRAINT uc_city_region_name_country UNIQUE (name, country_id);
+
 CREATE INDEX inx_city_regions_name ON city_regions (name);
 
 ALTER TABLE city_regions
