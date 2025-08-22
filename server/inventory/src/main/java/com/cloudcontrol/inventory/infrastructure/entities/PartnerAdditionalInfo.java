@@ -1,10 +1,7 @@
 package com.cloudcontrol.inventory.infrastructure.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 
@@ -20,7 +17,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString(exclude = "partner")
+@ToString(exclude = {"partner"})
 public class PartnerAdditionalInfo {
 
     public static final int EMAIL_MAX_LENGTH = 254;
@@ -31,7 +28,7 @@ public class PartnerAdditionalInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty(message = "Email is required")
+    @NotBlank(message = "Email is required")
     @Email(message = "Please provide a valid email address")
     @Size(max = EMAIL_MAX_LENGTH, message = "Email cannot exceed {max} characters")
     @Column(name = "email", length = EMAIL_MAX_LENGTH)
