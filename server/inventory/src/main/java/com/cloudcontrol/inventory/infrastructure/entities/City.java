@@ -15,6 +15,9 @@ import lombok.*;
                 @Index(name = "inx_cities_name", columnList = "name"),
                 @Index(name = "inx_cities_postal_code_name", columnList = "postal_code, name"),
                 @Index(name = "inx_cities_city_region_id", columnList = "city_region_id"),
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uc_cities_postal_code_name", columnNames = {"postal_code", "name"}),
         }
 )
 @Data
@@ -32,13 +35,11 @@ public class City {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Postal code is required")
     @NotBlank(message = "Postal code is required")
     @Size(max = POSTAL_CODE_MAX_LENGTH, message = "Postal code cannot exceed {max} characters")
     @Column(name = "postal_code", length = POSTAL_CODE_MAX_LENGTH, nullable = false)
     private String postalCode;
 
-    @NotNull(message = "City name is required")
     @NotBlank(message = "City name is required")
     @Size(max = NAME_MAX_LENGTH, message = "City name cannot exceed {max} characters")
     @Column(name = "name", length = NAME_MAX_LENGTH, nullable = false)
@@ -49,4 +50,16 @@ public class City {
     @JoinColumn(name = "city_region_id", nullable = false)
     @JsonIgnore
     private CityRegion cityRegion;
+
+    @PrePersist
+    @PreUpdate
+    private void normalizeData() {
+        if (postalCode != null) {
+            postalCode = postalCode.trim();
+        }
+
+        if (name != null) {
+            name = name.trim();
+        }
+    }
 }
