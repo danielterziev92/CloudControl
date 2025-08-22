@@ -9,14 +9,9 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -36,13 +31,12 @@ import java.util.List;
 )
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(exclude = {"parent", "children"})
 public class Category {
 
     public static final int NAME_MAX_LENGTH = 100;
-
-    private static final Logger logger = LoggerFactory.getLogger(Category.class);
 
     @EqualsAndHashCode.Include
     @Id
@@ -54,7 +48,6 @@ public class Category {
     @Column(name = "type", nullable = false)
     private CategoryType type;
 
-    @NotNull(message = "Category name is required")
     @NotBlank(message = "Category name cannot be blank")
     @Size(max = NAME_MAX_LENGTH, message = "Category name cannot exceed {max} characters")
     @Column(name = "name", length = NAME_MAX_LENGTH, nullable = false)
@@ -63,16 +56,7 @@ public class Category {
     @NotNull(message = "Display order is required")
     @Min(value = 0, message = "Display order must be non-negative")
     @Column(name = "display_order", nullable = false)
-    private Long displayOrder;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
-    @JsonBackReference
-    private Category parent;
-
-    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private List<Category> children = new ArrayList<>();
+    private Integer displayOrder;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -84,37 +68,25 @@ public class Category {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime updatedAt;
 
-    public Category(CategoryType type, String name, Long displayOrder) {
-        this.type = type;
-        this.name = name;
-        this.displayOrder = displayOrder;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    @JsonBackReference
+    private Category parent;
 
-    public Category(CategoryType type, String name, Long displayOrder, Category parent) {
-        this.type = type;
-        this.name = name;
-        this.displayOrder = displayOrder;
-        this.parent = parent;
-    }
+    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("displayOrder ASC, name ASC")
+    @JsonManagedReference
+    private List<Category> children = new ArrayList<>();
 
     @PrePersist
     @PreUpdate
     protected void cleanupData() {
         if (displayOrder == null) {
-            displayOrder = 0L;
+            displayOrder = 0;
         }
 
         if (name != null) {
-            String trimmedName = name.trim();
-            if (trimmedName.isEmpty()) {
-                logger.atError()
-                        .addKeyValue("class", Category.class.getName())
-                        .addKeyValue("method", "cleanupData")
-                        .addKeyValue("originalValue", name)
-                        .log("Category name cannot be empty after trimming.");
-                throw new IllegalArgumentException("Category name cannot be empty after trimming.");
-            }
-            name = trimmedName;
+            name = name.trim();
         }
     }
 }
