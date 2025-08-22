@@ -1,6 +1,5 @@
 package com.cloudcontrol.inventory.infrastructure.entities;
 
-import com.cloudcontrol.inventory.domain.enums.CategoryType;
 import com.cloudcontrol.inventory.domain.enums.PartnerType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -10,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -33,7 +33,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString(exclude = {"createdAt", "updatedAt", "deletedAt", "bankAccounts"})
+@ToString(exclude = {"createdAt", "updatedAt", "deletedAt", "bankAccounts", "addresses", "additionalInfos", "category"})
 public class Partner {
 
     public static final int SKU_MAX_LENGTH = 50;
@@ -70,8 +70,8 @@ public class Partner {
     private String vatNumber;
 
     @Builder.Default
-    @Enumerated(EnumType.STRING)
-    @Column(name = "partner_type", length = PartnerType.MAX_LENGTH, nullable = false)
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "partner_type", nullable = false)
     private PartnerType partnerType = PartnerType.getDefault();
 
     @Builder.Default
@@ -89,14 +89,17 @@ public class Partner {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
+    @Builder.Default
     @OneToMany(mappedBy = "partner", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<PartnerBankAccount> bankAccounts;
+    private Set<PartnerBankAccount> bankAccounts = new HashSet<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "partner", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<PartnerAddress> addresses;
+    private Set<PartnerAddress> addresses = new HashSet<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "partner", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<PartnerAdditionalInfo> additionalInfos;
+    private Set<PartnerAdditionalInfo> additionalInfos = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
@@ -104,16 +107,28 @@ public class Partner {
 
     @PrePersist
     @PreUpdate
-    private void prePersistUpdate() {
-        if (category != null && category.getType() != CategoryType.PARTNER) {
-            throw new IllegalArgumentException("Partner can only be assigned to PARTNER type categories");
+    private void normalizeData() {
+        if (sku != null) {
+            sku = sku.trim();
+            if (sku.isEmpty()) sku = null;
         }
-    }
 
-    public void setCategory(Category category) {
-        if (category != null && category.getType() != CategoryType.PARTNER) {
-            throw new IllegalArgumentException("Partner can only be assigned to PARTNER type categories");
+        if (companyName != null) {
+            companyName = companyName.trim();
         }
-        this.category = category;
+
+        if (contactPersonName != null) {
+            contactPersonName = contactPersonName.trim();
+            if (contactPersonName.isEmpty()) contactPersonName = null;
+        }
+
+        if (taxNumber != null) {
+            taxNumber = taxNumber.trim();
+        }
+
+        if (vatNumber != null) {
+            vatNumber = vatNumber.trim();
+            if (vatNumber.isEmpty()) vatNumber = null;
+        }
     }
 }
