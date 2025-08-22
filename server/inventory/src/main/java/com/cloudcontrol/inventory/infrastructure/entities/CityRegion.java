@@ -3,7 +3,6 @@ package com.cloudcontrol.inventory.infrastructure.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -30,7 +29,6 @@ public class CityRegion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "City region name is required")
     @NotBlank(message = "City region name is required")
     @Size(max = NAME_MAX_LENGTH, message = "City region name cannot exceed {max} characters")
     @Column(name = "name", nullable = false, length = NAME_MAX_LENGTH)
