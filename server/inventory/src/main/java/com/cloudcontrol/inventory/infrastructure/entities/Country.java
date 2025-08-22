@@ -2,6 +2,7 @@ package com.cloudcontrol.inventory.infrastructure.entities;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,7 @@ public class Country {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Country name is required")
     @Column(name = "name", length = NAME_MAX_LENGTH, nullable = false)
     private String name;
 }
