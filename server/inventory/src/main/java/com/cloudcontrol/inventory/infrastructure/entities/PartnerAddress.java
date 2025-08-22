@@ -2,8 +2,8 @@ package com.cloudcontrol.inventory.infrastructure.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Entity
@@ -29,9 +29,8 @@ public class PartnerAddress {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Address is required")
     @NotBlank(message = "Address is required")
-    @NotEmpty(message = "Address cannot be empty")
+    @Size(max = ADDRESS_MAX_LENGTH, message = "Address cannot exceed {max} characters")
     @Column(name = "address", nullable = false)
     private String address;
 
