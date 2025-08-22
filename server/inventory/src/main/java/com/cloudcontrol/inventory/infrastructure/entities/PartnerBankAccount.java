@@ -2,7 +2,6 @@ package com.cloudcontrol.inventory.infrastructure.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -32,23 +31,17 @@ public class PartnerBankAccount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Bank account name is required")
     @NotBlank(message = "Bank account name is required")
-    @NotEmpty(message = "Bank account name cannot be empty")
     @Size(max = NAME_MAX_LENGTH, message = "Bank account name cannot exceed {max} characters")
     @Column(name = "name", length = NAME_MAX_LENGTH, nullable = false)
     private String name;
 
-    @NotNull(message = "IBAN is required")
     @NotBlank(message = "IBAN is required")
-    @NotEmpty(message = "IBAN cannot be empty")
     @Size(max = IBAN_MAX_LENGTH, message = "IBAN cannot exceed {max} characters")
     @Column(name = "iban", length = IBAN_MAX_LENGTH, nullable = false)
     private String iban;
 
-    @NotNull(message = "SWIFT is required")
     @NotBlank(message = "SWIFT is required")
-    @NotEmpty(message = "SWIFT cannot be empty")
     @Size(max = SWIFT_MAX_LENGTH, message = "Swift cannot exceed {max} characters")
     @Column(name = "swift", length = SWIFT_MAX_LENGTH, nullable = false)
     private String swift;
