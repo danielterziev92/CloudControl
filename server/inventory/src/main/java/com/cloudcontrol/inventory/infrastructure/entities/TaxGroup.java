@@ -1,0 +1,45 @@
+package com.cloudcontrol.inventory.infrastructure.entities;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import lombok.*;
+
+@Entity
+@Table(
+        name = "tax_groups",
+        indexes = {
+                @Index(name = "inx_tax_groups_name", columnList = "name"),
+                @Index(name = "inx_tax_groups_value", columnList = "value"),
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uc_tax_group_name", columnNames = "name"),
+        }
+)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+public class TaxGroup {
+
+    public static final int NAME_MAX_LENGTH = 7;
+    public static final int VALUE_MIN = 0;
+    public static final int VALUE_MAX = 100;
+
+    @EqualsAndHashCode.Include
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotNull(message = "Tax group name is required")
+    @NotBlank(message = "Tax group name is required")
+    @NotEmpty(message = "Tax group name cannot be empty")
+    @Column(name = "name", length = NAME_MAX_LENGTH, nullable = false)
+    private String name;
+
+    @NotNull(message = "Tax group value is required")
+    @Min(value = VALUE_MIN, message = "Tax group value must be at least {min}")
+    @Max(value = VALUE_MAX, message = "Tax group value cannot exceed {max}")
+    @Column(name = "value", nullable = false)
+    private Integer value;
+}
