@@ -30,19 +30,28 @@ public class ProductPrice {
     public static final int PRICE_PRECISION = 15;
     public static final int PRICE_SCALE = 8;
 
-    @EqualsAndHashCode.Exclude
+    @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Version
+    private Long version;
 
     @NotNull(message = "ProductPriceType is required")
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "type", nullable = false)
     private ProductPriceType type;
 
+    @NotNull(message = "Price is required")
     @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than zero")
-    @Column(name = "price", precision = PRICE_PRECISION, scale = PRICE_SCALE)
+    @Column(name = "price", precision = PRICE_PRECISION, scale = PRICE_SCALE, nullable = false)
     private BigDecimal price;
+
+    @NotNull(message = "Currency is required")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "currency_id", nullable = false)
+    private Currency currency;
 
     @NotNull(message = "Product is required")
     @ManyToOne(fetch = FetchType.LAZY)
