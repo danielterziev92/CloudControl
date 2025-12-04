@@ -1,5 +1,6 @@
 # IntelliJ IDEA specific files
 .idea/
+.idea
 *.iml
 *.iws
 out/
