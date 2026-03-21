@@ -1,5 +1,6 @@
 package com.cloudcontrol.catalog.domain.counterparty.rule;
 
+import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.regex.Pattern;
@@ -7,13 +8,13 @@ import java.util.regex.Pattern;
 /**
  * Validation constraints and message codes for UIC (ЕИК) value objects.
  */
-@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class UicRules {
 
     /**
      * Rules specific to Bulgarian UIC.
      */
-    @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static final class Bulgarian {
 
         /**
