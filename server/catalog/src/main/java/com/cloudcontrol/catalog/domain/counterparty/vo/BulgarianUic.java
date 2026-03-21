@@ -3,12 +3,10 @@ package com.cloudcontrol.catalog.domain.counterparty.vo;
 import com.cloudcontrol.catalog.domain.counterparty.rule.UicRules;
 import com.cloudcontrol.catalog.domain.shared.InvalidValueException;
 
-import java.util.regex.Pattern;
-
 /**
  * Bulgarian company registration number (ЕИК / Единен идентификационен код).
  *
- * @see UicRules.Bulgarian for format rules and message codes
+ * @see com.cloudcontrol.catalog.domain.counterparty.rule.UicRules.Bulgarian for format rules and message codes
  */
 public record BulgarianUic(String value) implements CompanyRegistrationNumber {
 
