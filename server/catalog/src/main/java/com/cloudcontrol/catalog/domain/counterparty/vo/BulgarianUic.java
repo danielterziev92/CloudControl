@@ -2,6 +2,7 @@ package com.cloudcontrol.catalog.domain.counterparty.vo;
 
 import com.cloudcontrol.catalog.domain.counterparty.rule.UicRules;
 import com.cloudcontrol.catalog.domain.shared.InvalidValueException;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Bulgarian company registration number (ЕИК / Единен идентификационен код).
@@ -19,7 +20,7 @@ public record BulgarianUic(String value) implements CompanyRegistrationNumber {
     }
 
     @Override
-    public String countryCode() {
+    public @NonNull String countryCode() {
         return UicRules.Bulgarian.COUNTRY_CODE;
     }
 }

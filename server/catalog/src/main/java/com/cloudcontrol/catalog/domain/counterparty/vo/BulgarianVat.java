@@ -2,6 +2,7 @@ package com.cloudcontrol.catalog.domain.counterparty.vo;
 
 import com.cloudcontrol.catalog.domain.counterparty.rule.VatRules;
 import com.cloudcontrol.catalog.domain.shared.InvalidValueException;
+import org.jspecify.annotations.NonNull;
 
 import java.util.regex.Pattern;
 
@@ -24,7 +25,7 @@ public record BulgarianVat(String value) implements TaxNumber {
     }
 
     @Override
-    public String countryCode() {
+    public @NonNull String countryCode() {
         return VatRules.Bulgarian.COUNTRY_CODE;
     }
 }
