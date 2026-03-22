@@ -16,8 +16,8 @@ public sealed interface CounterpartyEvent extends DomainEvent permits
 
     record PartnerRegistered(
             Counterparty.CounterpartyId counterpartyId,
-            String nameBg,
-            String uic
+            String name,
+            String registrationNumber
     ) implements CounterpartyEvent {
     }
 

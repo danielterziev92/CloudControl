@@ -92,7 +92,7 @@ public class PartnerInfo implements Entity<Counterparty, PartnerInfo.PartnerInfo
         this.name = name;
     }
 
-    void updateNameEn(@NonNull String name, @NonNull UserIdentifier changedBy) {
+    void updateNameEn(@NonNull String nameEn, @NonNull UserIdentifier changedBy) {
         validateNameEn(nameEn);
         AuditBuilder.forUpdate(entity(), entityId(), changedBy)
                 .field(Fields.nameEn, this.nameEn, nameEn)
@@ -153,6 +153,21 @@ public class PartnerInfo implements Entity<Counterparty, PartnerInfo.PartnerInfo
         this.type = type;
     }
 
+    @Override
+    public @NonNull List<AuditEntry> getAuditEntries() {
+        return Collections.unmodifiableList(this.auditEntries);
+    }
+
+    @Override
+    public void addAuditEntry(@NonNull AuditEntry entry) {
+        this.auditEntries.add(entry);
+    }
+
+    @Override
+    public void clearAuditEntries() {
+        this.auditEntries.clear();
+    }
+
     private static void validateName(@NonNull String value) {
         if (value.isBlank())
             throw new InvalidValueException(PartnerInfoRules.Name.BLANK);
@@ -177,21 +192,6 @@ public class PartnerInfo implements Entity<Counterparty, PartnerInfo.PartnerInfo
     private static void validateCustodianEn(@Nullable String value) {
         if (value != null && value.length() > PartnerInfoRules.CustodianEn.MAX_LENGTH)
             throw new InvalidValueException(PartnerInfoRules.CustodianEn.TOO_LONG);
-    }
-
-    @Override
-    public @NonNull List<AuditEntry> getAuditEntries() {
-        return Collections.unmodifiableList(this.auditEntries);
-    }
-
-    @Override
-    public void addAuditEntry(@NonNull AuditEntry entry) {
-        this.auditEntries.add(entry);
-    }
-
-    @Override
-    public void clearAuditEntries() {
-        this.auditEntries.clear();
     }
 
     private static @NonNull String entity() {

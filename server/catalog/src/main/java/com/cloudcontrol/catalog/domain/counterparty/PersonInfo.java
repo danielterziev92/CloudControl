@@ -125,6 +125,21 @@ public class PersonInfo implements Entity<Counterparty, PersonInfo.PersonInfoId>
         return String.format("%s %s", firstName, lastName);
     }
 
+    @Override
+    public @NonNull List<AuditEntry> getAuditEntries() {
+        return Collections.unmodifiableList(this.auditEntries);
+    }
+
+    @Override
+    public void addAuditEntry(@NonNull AuditEntry entry) {
+        this.auditEntries.add(entry);
+    }
+
+    @Override
+    public void clearAuditEntries() {
+        this.auditEntries.clear();
+    }
+
     private static void validateFirstName(@NonNull String value) {
         if (value.isBlank())
             throw new InvalidValueException(PersonInfoRules.FirstName.BLANK);
@@ -144,21 +159,6 @@ public class PersonInfo implements Entity<Counterparty, PersonInfo.PersonInfoId>
 
         if (value.length() > PersonInfoRules.LastName.MAX_LENGTH)
             throw new InvalidValueException(PersonInfoRules.LastName.TOO_LONG, PersonInfoRules.LastName.MAX_LENGTH);
-    }
-
-    @Override
-    public @NonNull List<AuditEntry> getAuditEntries() {
-        return Collections.unmodifiableList(this.auditEntries);
-    }
-
-    @Override
-    public void addAuditEntry(@NonNull AuditEntry entry) {
-        this.auditEntries.add(entry);
-    }
-
-    @Override
-    public void clearAuditEntries() {
-        this.auditEntries.clear();
     }
 
     private static @NonNull String entity() {
