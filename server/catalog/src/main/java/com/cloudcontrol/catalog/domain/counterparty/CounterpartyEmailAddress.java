@@ -1,9 +1,12 @@
 package com.cloudcontrol.catalog.domain.counterparty;
 
+import com.cloudcontrol.catalog.domain.counterparty.rule.CounterpartyEmailRules;
+import com.cloudcontrol.catalog.domain.shared.InvalidValueException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.jmolecules.ddd.types.Entity;
 import org.jmolecules.ddd.types.Identifier;
+import org.jspecify.annotations.NonNull;
 
 @Getter
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
@@ -12,20 +15,19 @@ public class CounterpartyEmailAddress implements Entity<Counterparty, Counterpar
     public record CounterpartyEmailAddressId(Long value) implements Identifier {
     }
 
-    private static final String EMAIL_PATTERN = "^[\\w.+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$";
-
     private final CounterpartyEmailAddressId id;
-    private final String email;
+    @NonNull
+    private String email;
     private boolean isPrimary;
 
-    static CounterpartyEmailAddress create(String email, boolean isPrimary) {
-        if (email == null || email.isBlank()) {
-            throw new IllegalArgumentException("Email is required");
-        }
-        if (!email.matches(EMAIL_PATTERN)) {
-            throw new IllegalArgumentException("Invalid email format: " + email);
-        }
+    static @NonNull CounterpartyEmailAddress create(@NonNull String email, boolean isPrimary) {
+        validateEmail(email);
         return new CounterpartyEmailAddress(null, email, isPrimary);
+    }
+
+    void updateEmail(@NonNull String email) {
+        validateEmail(email);
+        this.email = email;
     }
 
     void markAsPrimary() {
@@ -34,5 +36,16 @@ public class CounterpartyEmailAddress implements Entity<Counterparty, Counterpar
 
     void unmarkAsPrimary() {
         this.isPrimary = false;
+    }
+
+    private static void validateEmail(@NonNull String value) {
+        if (value.isBlank())
+            throw new InvalidValueException(CounterpartyEmailRules.Email.BLANK);
+
+        if (value.length() > CounterpartyEmailRules.Email.MAX_LENGTH)
+            throw new InvalidValueException(CounterpartyEmailRules.Email.TOO_LONG, CounterpartyEmailRules.Email.MAX_LENGTH);
+
+        if (!CounterpartyEmailRules.Email.PATTERN.matcher(value).matches())
+            throw new InvalidValueException(CounterpartyEmailRules.Email.INVALID, value);
     }
 }
