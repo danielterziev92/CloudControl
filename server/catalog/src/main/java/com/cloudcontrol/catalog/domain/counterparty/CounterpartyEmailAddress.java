@@ -108,6 +108,6 @@ public class CounterpartyEmailAddress implements Entity<Counterparty, Counterpar
     }
 
     private @NonNull String entityId() {
-        return id != null ? id.value().toString() : "new";
+        return this.id != null ? this.id.value().toString() : "new";
     }
 }

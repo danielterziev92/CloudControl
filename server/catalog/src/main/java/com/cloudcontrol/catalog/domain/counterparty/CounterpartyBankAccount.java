@@ -18,6 +18,7 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Getter
@@ -128,17 +129,17 @@ public class CounterpartyBankAccount implements Entity<Counterparty, Counterpart
 
     @Override
     public @NonNull List<AuditEntry> getAuditEntries() {
-        return List.of();
+        return Collections.unmodifiableList(this.auditEntries);
     }
 
     @Override
     public void addAuditEntry(@NonNull AuditEntry entry) {
-
+        this.auditEntries.add(entry);
     }
 
     @Override
     public void clearAuditEntries() {
-
+        this.auditEntries.clear();
     }
 
     private static void validateName(@NonNull String value) {
@@ -159,6 +160,6 @@ public class CounterpartyBankAccount implements Entity<Counterparty, Counterpart
     }
 
     private @NonNull String entityId() {
-        return id != null ? id.value().toString() : "new";
+        return this.id != null ? this.id.value().toString() : "new";
     }
 }

@@ -83,7 +83,7 @@ public class CounterpartyContact implements Entity<Counterparty, CounterpartyCon
     }
 
     public boolean hasContactPerson() {
-        return personName != null && !personName.isBlank();
+        return this.personName != null && !this.personName.isBlank();
     }
 
     @Override
@@ -111,6 +111,6 @@ public class CounterpartyContact implements Entity<Counterparty, CounterpartyCon
     }
 
     private @NonNull String entityId() {
-        return id != null ? id.value().toString() : "new";
+        return this.id != null ? this.id.value().toString() : "new";
     }
 }

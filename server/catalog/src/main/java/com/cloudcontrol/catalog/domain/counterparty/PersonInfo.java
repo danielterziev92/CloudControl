@@ -120,9 +120,9 @@ public class PersonInfo implements Entity<Counterparty, PersonInfo.PersonInfoId>
     }
 
     public @NonNull String fullName() {
-        if (middleName != null && !middleName.isBlank())
-            return String.format("%s %s %s", firstName, middleName, lastName);
-        return String.format("%s %s", firstName, lastName);
+        if (this.middleName != null && !this.middleName.isBlank())
+            return String.format("%s %s %s", this.firstName, this.middleName, this.lastName);
+        return String.format("%s %s", this.firstName, this.lastName);
     }
 
     @Override

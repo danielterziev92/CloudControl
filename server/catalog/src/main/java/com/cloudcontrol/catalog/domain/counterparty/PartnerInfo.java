@@ -199,6 +199,6 @@ public class PartnerInfo implements Entity<Counterparty, PartnerInfo.PartnerInfo
     }
 
     private @NonNull String entityId() {
-        return id != null ? id.value().toString() : "new";
+        return this.id != null ? this.id.value().toString() : "new";
     }
 }
