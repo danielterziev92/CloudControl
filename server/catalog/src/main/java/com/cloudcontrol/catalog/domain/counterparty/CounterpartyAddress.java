@@ -1,49 +1,67 @@
 package com.cloudcontrol.catalog.domain.counterparty;
 
+import com.cloudcontrol.catalog.domain.counterparty.rule.CounterpartyAddressRules;
+import com.cloudcontrol.catalog.domain.counterparty.vo.CountryCode;
+import com.cloudcontrol.catalog.domain.shared.InvalidValueException;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.jmolecules.ddd.types.Entity;
 import org.jmolecules.ddd.types.Identifier;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 @Getter
-@AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class CounterpartyAddress implements Entity<Counterparty, CounterpartyAddress.CounterpartyAddressId> {
     public record CounterpartyAddressId(Long value) implements Identifier {
     }
 
-    public enum Language {
-        BG, EN
-    }
-
     private final CounterpartyAddressId id;
+    @NonNull
     private final Language language;
-    private final String country;
-    private final String region;
-    private final String town;
-    private final String address;
+    @NonNull
+    private CountryCode country;
+    @Nullable
+    private String region;
+    @NonNull
+    private String town;
+    @NonNull
+    private String address;
     private boolean isPrimary;
 
-    static CounterpartyAddress create(
-            Language language,
-            String country,
-            String region,
-            String town,
-            String address,
+    static @NonNull CounterpartyAddress create(
+            @NonNull Language language,
+            @NonNull CountryCode country,
+            @Nullable String region,
+            @NonNull String town,
+            @NonNull String address,
             boolean isPrimary
     ) {
-        if (language == null) {
-            throw new IllegalArgumentException("Language is required");
-        }
-        if (country == null || country.isBlank()) {
-            throw new IllegalArgumentException("Country is required");
-        }
-        if (town == null || town.isBlank()) {
-            throw new IllegalArgumentException("Town is required");
-        }
-        if (address == null || address.isBlank()) {
-            throw new IllegalArgumentException("Address is required");
-        }
+        validateRegion(region);
+        validateTown(town);
+        validateAddress(address);
+
         return new CounterpartyAddress(null, language, country, region, town, address, isPrimary);
+    }
+
+    void updateCountry(@NonNull CountryCode country) {
+        this.country = country;
+    }
+
+    void updateRegion(@Nullable String region) {
+        validateRegion(region);
+        this.region = region;
+    }
+
+    void updateTown(@NonNull String town) {
+        validateTown(town);
+        this.town = town;
+    }
+
+    void updateAddress(@NonNull String address) {
+        validateAddress(address);
+        this.address = address;
     }
 
     void markAsPrimary() {
@@ -52,5 +70,26 @@ public class CounterpartyAddress implements Entity<Counterparty, CounterpartyAdd
 
     void unmarkAsPrimary() {
         this.isPrimary = false;
+    }
+
+    private static void validateRegion(@Nullable String value) {
+        if (value != null && value.length() > CounterpartyAddressRules.Region.MAX_LENGTH)
+            throw new InvalidValueException(CounterpartyAddressRules.Region.TOO_LONG, CounterpartyAddressRules.Region.MAX_LENGTH);
+    }
+
+    private static void validateTown(@NonNull String value) {
+        if (value.isBlank())
+            throw new InvalidValueException(CounterpartyAddressRules.Town.BLANK);
+
+        if (value.length() > CounterpartyAddressRules.Town.MAX_LENGTH)
+            throw new InvalidValueException(CounterpartyAddressRules.Town.TOO_LONG, CounterpartyAddressRules.Town.MAX_LENGTH);
+    }
+
+    private static void validateAddress(@NonNull String value) {
+        if (value.isBlank())
+            throw new InvalidValueException(CounterpartyAddressRules.Address.BLANK);
+
+        if (value.length() > CounterpartyAddressRules.Address.MAX_LENGTH)
+            throw new InvalidValueException(CounterpartyAddressRules.Address.TOO_LONG, CounterpartyAddressRules.Address.MAX_LENGTH);
     }
 }
